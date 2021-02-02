@@ -10,9 +10,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gwuhaolin/livego/configure"
-
 	"github.com/gwuhaolin/livego/av"
+	"github.com/gwuhaolin/livego/configure"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -50,6 +49,10 @@ func NewServer() *Server {
 func (server *Server) Serve(listener net.Listener) error {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		// 允许访问所有域-解决HLS协议跨域问题
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		// Header的类型
+		w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
 		server.handle(w, r)
 	})
 	server.listener = listener

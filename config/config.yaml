@@ -1,0 +1,40 @@
+# 日志级别 panic,fatal,error,warn,info,debug,trace
+level: debug
+
+# FLV选项
+flv_archive: false
+flv_dir: "./tmp"
+httpflv_addr: ":7001"
+
+# RTMP选项
+rtmp_noauth: false
+rtmp_addr: ":1935"
+read_timeout: 10
+write_timeout: 10
+
+# HLS选项
+hls_addr: ":7002"
+
+# API选项
+api_addr: ":8090"
+
+server:
+- appname: live
+  hls: true
+  api: true
+  flv: true
+
+# 启用jwt鉴权
+# algorithm：仅支持以下三种算法，默认HS256算法
+# HMAC签名方法：  HS256 HS384 HS512
+# RSA签名方法：   RS256，RS384，RS512
+# ECDSA签名方法： ES256，ES384，ES512
+jwt:
+- secret: "test"
+  algorithm: "HS256"
+
+# 启用redis存储，默认启用本地存储
+redis_addr: 127.0.0.1:6379
+redis_pwd:
+
+# http://localhost:8090/control/get?room=movie

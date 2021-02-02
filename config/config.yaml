@@ -1,28 +1,49 @@
+#-------------------------------开发相关配置-------------------------------
 # 日志级别 panic,fatal,error,warn,info,debug,trace
 level: debug
 
-# FLV选项
-flv_archive: false
-flv_dir: "./tmp"
+# gop数量
+gop_num: 1
+#------------------------------------------------------------------------
+
+#------------------------------HTTP-FLV配置-------------------------------
+# FLV选项（Rtmp Over Http，H5中需要插件，Http长连接，低延迟）
 httpflv_addr: ":7001"
+flv_archive: false
+# flv文件输出路径
+flv_dir: "./tmp"
+#------------------------------------------------------------------------
 
-# RTMP选项
-rtmp_noauth: false
+#--------------------------------RTMP配置---------------------------------
+# RTMP选项（Real Time Message Protocol，H5中需要插件，TCP长连接，低延迟）
 rtmp_addr: ":1935"
+rtmp_noauth: false
+# 读超时时间
 read_timeout: 10
+# 写超时时间
 write_timeout: 10
+#------------------------------------------------------------------------
 
-# HLS选项
+#---------------------------------HLS配置---------------------------------
+# HLS选项（Http Living Streaming，支持H5，Http短连接，有延迟）
 hls_addr: ":7002"
+hls_keep_after_end: false
+#------------------------------------------------------------------------
 
-# API选项
+#---------------------------------HTTP配置--------------------------------
+# HTTP选项
 api_addr: ":8090"
 
+# 服务配置
 server:
   - appname: live
-    hls: true
     api: true
+    hls: true
     flv: true
+    live: true
+#------------------------------------------------------------------------
+
+#--------------------------JWY配置（暂时不要开启）---------------------------
 
 # 启用jwt鉴权
 # algorithm：仅支持以下三种算法，默认HS256算法
@@ -33,8 +54,42 @@ jwt:
   secret: "test"
   algorithm: "HS256"
 
+#------------------------------------------------------------------------
+
+#-------------------------------REDIS缓存配置------------------------------
+
 # 启用redis存储，默认启用本地存储
 redis_addr: 127.0.0.1:6379
 redis_pwd:
 
+#------------------------------------------------------------------------
+
+
+#--------------------------------默认接口地址------------------------------
+
+# RTMP协议
+# rtmp://localhost:1935/live/movie
+
+# HTTP-FLV协议
+# http://127.0.0.1:7001/live/movie.flv
+
+# HLS协议
+# http://127.0.0.1:7002/live/movie.m3u8
+
+# ffmpeg推流
+# ffmpeg -re -i demo.flv -c copy -f flv rtmp://localhost:1935/live/密钥
+# ffmpeg -re -i demo.mp4 -c copy -f flv rtmp://localhost:1935/live/密钥
+
+# 获取密钥
 # http://localhost:8090/control/get?room=movie
+
+# http://127.0.0.1:8090/stat/livestat
+
+# http://127.0.0.1:8090/control/pull?&oper=start&app=live&name=movie&url=rtmp://127.0.0.1/live/movie
+
+# http://127.0.0.1:8090/control/push?&oper=start&app=live&name=movie&url=rtmp://127.0.0.1/live/movie
+
+# http://127.0.0.1:8090/control/reset?room=movie
+
+# http://127.0.0.1:8090/control/delete?room=movie
+

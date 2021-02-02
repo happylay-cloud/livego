@@ -77,9 +77,11 @@ func JWTMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var algorithm jwt.SigningMethod
 		if len(configure.Config.GetString("jwt.algorithm")) > 0 {
+			// 获取签名方法
 			algorithm = jwt.GetSigningMethod(configure.Config.GetString("jwt.algorithm"))
 		}
 
+		// 默认采用HS256签名
 		if algorithm == nil {
 			algorithm = jwt.SigningMethodHS256
 		}

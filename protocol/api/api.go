@@ -92,7 +92,7 @@ func JWTMiddleware(next http.Handler) http.Handler {
 					Status: 403,
 					Data:   err,
 				}
-				res.SendJson()
+				_, _ = res.SendJson()
 			},
 		})
 
@@ -143,7 +143,7 @@ type streams struct {
 }
 
 //http://127.0.0.1:8090/stat/livestat
-func (server *Server) GetLiveStatics(w http.ResponseWriter, req *http.Request) {
+func (s *Server) GetLiveStatics(w http.ResponseWriter, req *http.Request) {
 	res := &Response{
 		w:      w,
 		Data:   nil,
@@ -152,7 +152,7 @@ func (server *Server) GetLiveStatics(w http.ResponseWriter, req *http.Request) {
 
 	defer res.SendJson()
 
-	rtmpStream := server.handler.(*rtmp.RtmpStream)
+	rtmpStream := s.handler.(*rtmp.RtmpStream)
 	if rtmpStream == nil {
 		res.Status = 500
 		res.Data = "Get rtmp stream information error"

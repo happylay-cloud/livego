@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
+	"net"
+	"path"
+	"runtime"
+	"time"
+
 	"github.com/gwuhaolin/livego/configure"
 	"github.com/gwuhaolin/livego/protocol/api"
 	"github.com/gwuhaolin/livego/protocol/hls"
 	"github.com/gwuhaolin/livego/protocol/httpflv"
 	"github.com/gwuhaolin/livego/protocol/rtmp"
-	"net"
-	"path"
-	"runtime"
-	"time"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -18,7 +19,9 @@ import (
 var VERSION = "master"
 
 func startHls() *hls.Server {
+	// 获取hls地址
 	hlsAddr := configure.Config.GetString("hls_addr")
+	// 监听TCP服务
 	hlsListen, err := net.Listen("tcp", hlsAddr)
 	if err != nil {
 		log.Fatal(err)
@@ -28,11 +31,11 @@ func startHls() *hls.Server {
 	go func() {
 		defer func() {
 			if r := recover(); r != nil {
-				log.Error("HLS server panic: ", r)
+				log.Error("HLS服务恐慌：", r)
 			}
 		}()
-		log.Info("HLS listen On ", hlsAddr)
-		hlsServer.Serve(hlsListen)
+		log.Info("HLS监听地址：", hlsAddr)
+		_ = hlsServer.Serve(hlsListen)
 	}()
 	return hlsServer
 }
@@ -40,8 +43,9 @@ func startHls() *hls.Server {
 var rtmpAddr string
 
 func startRtmp(stream *rtmp.RtmpStream, hlsServer *hls.Server) {
+	// 获取rtmp地址
 	rtmpAddr = configure.Config.GetString("rtmp_addr")
-
+	// 监听TCP服务
 	rtmpListen, err := net.Listen("tcp", rtmpAddr)
 	if err != nil {
 		log.Fatal(err)
@@ -51,24 +55,26 @@ func startRtmp(stream *rtmp.RtmpStream, hlsServer *hls.Server) {
 
 	if hlsServer == nil {
 		rtmpServer = rtmp.NewRtmpServer(stream, nil)
-		log.Info("HLS server disable....")
+		log.Info("HLS服务禁用...")
 	} else {
 		rtmpServer = rtmp.NewRtmpServer(stream, hlsServer)
-		log.Info("HLS server enable....")
+		log.Info("HLS服务启用...")
 	}
 
 	defer func() {
 		if r := recover(); r != nil {
-			log.Error("RTMP server panic: ", r)
+			log.Error("RTMP服务恐慌：", r)
 		}
 	}()
-	log.Info("RTMP Listen On ", rtmpAddr)
-	rtmpServer.Serve(rtmpListen)
+	log.Info("RTMP监听地址：", rtmpAddr)
+	_ = rtmpServer.Serve(rtmpListen)
 }
 
 func startHTTPFlv(stream *rtmp.RtmpStream) {
+	// 获取http-flv地址
 	httpflvAddr := configure.Config.GetString("httpflv_addr")
 
+	// 监听TCP服务
 	flvListen, err := net.Listen("tcp", httpflvAddr)
 	if err != nil {
 		log.Fatal(err)
@@ -78,15 +84,16 @@ func startHTTPFlv(stream *rtmp.RtmpStream) {
 	go func() {
 		defer func() {
 			if r := recover(); r != nil {
-				log.Error("HTTP-FLV server panic: ", r)
+				log.Error("HTTP-FLV服务恐慌：", r)
 			}
 		}()
-		log.Info("HTTP-FLV listen On ", httpflvAddr)
-		hdlServer.Serve(flvListen)
+		log.Info("HTTP-FLV监听地址：", httpflvAddr)
+		_ = hdlServer.Serve(flvListen)
 	}()
 }
 
 func startAPI(stream *rtmp.RtmpStream) {
+	// Api接口地址
 	apiAddr := configure.Config.GetString("api_addr")
 
 	if apiAddr != "" {
@@ -98,11 +105,11 @@ func startAPI(stream *rtmp.RtmpStream) {
 		go func() {
 			defer func() {
 				if r := recover(); r != nil {
-					log.Error("HTTP-API server panic: ", r)
+					log.Error("HTTP-API服务恐慌：", r)
 				}
 			}()
-			log.Info("HTTP-API listen On ", apiAddr)
-			opServer.Serve(opListen)
+			log.Info("HTTP-API监听地址：", apiAddr)
+			_ = opServer.Serve(opListen)
 		}()
 	}
 }
@@ -120,7 +127,7 @@ func init() {
 func main() {
 	defer func() {
 		if r := recover(); r != nil {
-			log.Error("livego panic: ", r)
+			log.Error("livego恐慌：", r)
 			time.Sleep(1 * time.Second)
 		}
 	}()
@@ -135,7 +142,7 @@ func main() {
 	`, VERSION)
 
 	apps := configure.Applications{}
-	configure.Config.UnmarshalKey("server", &apps)
+	_ = configure.Config.UnmarshalKey("server", &apps)
 	for _, app := range apps {
 		stream := rtmp.NewRtmpStream()
 		var hlsServer *hls.Server

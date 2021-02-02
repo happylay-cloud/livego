@@ -10,6 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// RoomKeysType 缓存结构体对象
 type RoomKeysType struct {
 	redisCli   *redis.Client
 	localCache *cache.Cache

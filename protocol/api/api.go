@@ -62,13 +62,17 @@ func NewServer(h av.Handler, rtmpAddr string) *Server {
 	}
 }
 
+// JWTMiddleware 中间件
 func JWTMiddleware(next http.Handler) http.Handler {
+	log.Debugf("初始化jwt中间件")
+	log.Debug("jwt加密方式：", configure.Config.GetString("jwt.algorithm"))
+
 	isJWT := len(configure.Config.GetString("jwt.secret")) > 0
 	if !isJWT {
 		return next
 	}
 
-	log.Info("Using JWT middleware")
+	log.Info("使用jwt中间件")
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var algorithm jwt.SigningMethod
@@ -123,7 +127,7 @@ func (s *Server) Serve(l net.Listener) error {
 	mux.HandleFunc("/stat/livestat", func(w http.ResponseWriter, r *http.Request) {
 		s.GetLiveStatics(w, r)
 	})
-	http.Serve(l, JWTMiddleware(mux))
+	_ = http.Serve(l, JWTMiddleware(mux))
 	return nil
 }
 

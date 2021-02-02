@@ -19,10 +19,10 @@ hls_addr: ":7002"
 api_addr: ":8090"
 
 server:
-- appname: live
-  hls: true
-  api: true
-  flv: true
+  - appname: live
+    hls: true
+    api: true
+    flv: true
 
 # 启用jwt鉴权
 # algorithm：仅支持以下三种算法，默认HS256算法
@@ -30,7 +30,7 @@ server:
 # RSA签名方法：   RS256，RS384，RS512
 # ECDSA签名方法： ES256，ES384，ES512
 jwt:
-- secret: "test"
+  secret: "test"
   algorithm: "HS256"
 
 # 启用redis存储，默认启用本地存储

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>live</title>
+    <link rel="stylesheet" href="./css/video-js.min.css">
+    <script src="./js/video.min.js"></script>
+</head>
+
+<body>
+<video id=live class="video-js vjs-default-skin"
+       x5-playsinline=""
+       playsinline=""
+       webkit-playsinline=""
+       controls
+       playsinline>
+    <source src="http://127.0.0.1:7002/live/movie.m3u8">
+</video>
+</body>
+
+</html>
+<script>
+    var player = videojs('live', {
+        playbackRates: [0.5, 1, 1.5, 2, 3]
+    });
+</script>

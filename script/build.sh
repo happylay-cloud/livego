@@ -24,20 +24,21 @@ gfctl build ../main.go --name $APP_NAME --arch amd64 --system darwin --version $
 
 # -----------------------------------新增配置--------------------------------------
 # 创建配置文件夹
-mkdir -p ../bin/$VERSION/config
+mkdir -p ../bin/$VERSION/{config,statics}
 
 # 复制配置文件
 cp ../config/* ../bin/$VERSION/config
+# 复制静态文件
+cp -r ../statics/* ../bin/$VERSION/statics
 
-# 压缩应用
 cd ../bin/$VERSION
 
 # 创建各个平台配置文件
-mkdir -p ./darwin_amd64/config
+mkdir -p ./darwin_amd64/{config,statics}
 
-mkdir -p ./linux_amd64/config
+mkdir -p ./linux_amd64/{config,statics}
 
-mkdir -p ./windows_amd64/config
+mkdir -p ./windows_amd64/{config,statics}
 
 cp ./config/* ./darwin_amd64/config
 
@@ -45,7 +46,13 @@ cp ./config/* ./linux_amd64/config
 
 cp ./config/* ./windows_amd64/config
 
+cp -r ./statics/* ./darwin_amd64/statics
+
+cp -r ./statics/* ./linux_amd64/statics
+
+cp -r ./statics/* ./windows_amd64/statics
 #--------------------------------------------------------------------------------------
+# 压缩应用
 
 tar -zcvf $APP_NAME.$VERSION-darwin-amd64.tar.gz darwin_amd64
 

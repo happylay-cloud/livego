@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="./css/video-js.min.css">
     <script src="./js/video.min.js"></script>
     <script src="./js/zh-CN.js"></script>
-    <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
 </head>
 
 <body>
@@ -43,9 +42,6 @@ style="object-fit:fill"：加这个style会让Android/web的视频在微信里�
        x5-video-orientation="portrait"
 >
 </video>
-<div id="current">当前时长：0:00</div>
-<div id="duration">总时长：0:00</div>
-<div id="pro"></div>
 </body>
 
 </html>
@@ -117,22 +113,17 @@ style="object-fit:fill"：加这个style会让Android/web的视频在微信里�
         notSupportedMessage: '离开一会儿，请耐心等候',
         sources: [ // 视频源
             {
-                src: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+                src: 'http://127.0.0.1:7002/live/movie.m3u8',
                 type: 'application/x-mpegURL',
                 poster: ''
-            },
-            // {
-            //     src: 'http://192.168.3.125:7002/live/movie.m3u8',
-            //     type: 'application/x-mpegURL',
-            //     poster: ''
-            // }
+            }
         ]
     }, function () {
         console.log(this)
         this.on('loadedmetadata',function(){
             console.log('loadedmetadata');
             // 加载到元数据后开始播放视频
-            startVideo();
+            player.play();
         })
 
         this.on('ended',function(){
@@ -165,71 +156,5 @@ style="object-fit:fill"：加这个style会让Android/web的视频在微信里�
         this.on('play',function(){
             console.log('play')
         })
-    });
-
-    var isVideoBreak;
-    function startVideo() {
-        player.play();
-
-        //微信内全屏支持
-        //document.getElementById('live').style.width = window.screen.width + "px";
-        //document.getElementById('live').style.height = window.screen.height + "px";
-
-        //判断开始播放视频，移除高斯模糊等待层
-        var isVideoPlaying = setInterval(function(){
-            const currentTime = player.currentTime();
-            if(currentTime > 0){
-                $('.vjs-poster').remove();
-                clearInterval(isVideoPlaying);
-            }
-        },200)
-
-        //判断视频是否卡住，卡主3s重新load视频
-        var lastTime = -1,
-            tryTimes = 0;
-
-        clearInterval(isVideoBreak);
-        isVideoBreak = setInterval(function(){
-            const currentTime = player.currentTime();
-            console.log('currentTime'+currentTime+'lastTime'+lastTime);
-
-            if(currentTime === lastTime){
-                //此时视频已卡主3s
-                //设置当前播放时间为超时时间，此时videojs会在play()后把currentTime设置为0
-                myPlayer.currentTime(currentTime+10000);
-                myPlayer.play();
-
-                //尝试5次播放后，如仍未播放成功提示刷新
-                if(++tryTimes > 5){
-                    alert('您的网速有点慢，刷新下试试');
-                    tryTimes = 0;
-                }
-            }else{
-                lastTime = currentTime;
-                tryTimes = 0;
-            }
-        },3000)
-    }
-
-    // 绑定事件
-    player.on("timeupdate", function (event) {
-        // 当前时间
-        const currentTime = parseInt(this.currentTime());
-        // 视频时长
-        const duration = this.duration();
-        console.log(duration)
-        const percent = (currentTime / duration * 100).toFixed(0) + "%";
-        console.log(percent);
-        $("#current").text(this.currentTime());
-        $("#duration").text(duration);
-        if (currentTime === duration) {
-            $("#pro").html("已完成");
-        }
-        if (currentTime === 6) {
-            // alert("判断播放时间执行动画");
-            // 执行dom改变页面内容
-        } else {
-            // 执行dom改变页面内容
-        }
     });
 </script>

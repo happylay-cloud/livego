@@ -133,7 +133,13 @@ func (r *RoomKeysType) DeleteChannel(channel string) bool {
 
 	// 删除redis信道（channel）
 	if !saveInLocal {
-		return r.redisCli.Del(channel).Err() != nil
+		// 获取密钥
+		key, err := r.redisCli.Get(channel).Result()
+		if err != nil {
+			log.Error("删除信道异常", err)
+		}
+		// 删除信道及密钥
+		return (r.redisCli.Del(key).Err() == nil) && (r.redisCli.Del(channel).Err() == nil)
 	}
 
 	// 删除本地缓存信道（channel）

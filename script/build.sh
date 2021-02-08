@@ -46,11 +46,12 @@ cp ./config/* ./linux_amd64/config
 
 cp ./config/* ./windows_amd64/config
 
-cp -r ./statics/* ./darwin_amd64/statics
+# -X排除扩展属性
+cp -Xr ./statics/* ./darwin_amd64/statics
 
-cp -r ./statics/* ./linux_amd64/statics
+cp -Xr ./statics/* ./linux_amd64/statics
 
-cp -r ./statics/* ./windows_amd64/statics
+cp -Xr ./statics/* ./windows_amd64/statics
 #--------------------------------------------------------------------------------------
 # 压缩应用
 

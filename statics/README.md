@@ -12,14 +12,16 @@ http://127.0.0.1:8090/statics/
 
 # 测试时需要修改index.html中src地址
 
-```http request
+```text
 video.js 
 
-7.7.5（最高兼容版本-不兼容safari）
+7.7.5（最高兼容版本-不兼容safari、ie、兼容chrome、edge）
 
 7.5.5 
 
-7.4.1（最低兼容版本-兼容safari）
+7.4.2（中间版本不兼容safari、兼容chrome、ie、edge）
+
+7.4.1（最低兼容版本-兼容safari、ie、chrome、edge）
 ```
 ```scss
 /* 显示时间轴-bug */

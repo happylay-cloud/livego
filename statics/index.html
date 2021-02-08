@@ -1,160 +1,76 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>live</title>
+    <title>直播测试页面</title>
+
     <link rel="stylesheet" href="./css/video-js.min.css">
     <script src="./js/video.min.js"></script>
     <script src="./js/zh-CN.js"></script>
 </head>
 
 <body>
-
-<!--
-controls：是否显示控制面板
-poster：当前视频数据无效时显示（预览图）
-autoplay：是否自动播放
-preload：视频是否预加载
-x-webkit-airplay：支持ios的AirPlay功能
-webkit-playsinline：让视频在小窗内播放，也就是不是全屏播放
-playsinline：ios微信浏览器支持小窗内播放
-x5-video-player-fullscreen：全屏设置，设置为true是防止横屏
-x5-video-orientation：播放器支付的方向，landscape横屏，portrait竖屏，默认值为竖屏
-x5-video-player-type="h5"：启用H5播放器，是wechat安卓版特性
-style="object-fit:fill"：加这个style会让Android/web的视频在微信里的视频全屏，如果是在手机上预览，会让视频的封面同视频一样大小
--->
-<!--<video id=live class="video-js vjs-default-skin"-->
-<!--       x5-playsinline=""-->
-<!--       playsinline=""-->
-<!--       webkit-playsinline=""-->
-<!--       controls-->
-<!--       playsinline>-->
-<video id=live
-       class="video-js vjs-default-skin vjs-big-play-centered"
-       playsinline="true"
-       webkit-playsinline="true"
-       x-webkit-airplay="allow"
-       x5-playsinline="true"
-       x5-video-player-type="h5"
-       x5-video-player-fullscreen="true"
-       x5-video-orientation="portrait"
->
+<!-- mp4播放简单配置 -->
+<video id=video class="video-js vjs-default-skin vjs-big-play-centered" x5-playsinline="" playsinline=""
+       webkit-playsinline="" controls playsinline>
+    <source src="./demo.mp4">
+</video>
+<!-- 直播简单配置 -->
+<video id=live class="video-js vjs-default-skin vjs-big-play-centered" x5-playsinline="" playsinline=""
+       webkit-playsinline="" controls playsinline>
+        <source src="http://127.0.0.1:7002/live/movie.m3u8">
 </video>
 </body>
 
 </html>
 <script>
-    const player = videojs('live', {
-        // 大播放按钮居中显示
-        bigPlayButton : true,
-        // 封面图
-        posterImage: true,
-        // 显示错误
-        errorDisplay : true,
-        // 是否显示控制条
-        controls: true,
-        // 初始语言，默认为英语
-        language: 'zh-CN',
-        // 播放速度
-        playbackRates: [0.5, 0.75, 1.0, 1.25, 1.5, 2.0],
-        // 直播样式
+    // mp4简单配置
+    var player = videojs('video', {
         liveui: true,
-        // 视频封面图地址
-        poster: '',
-        // 是否静音
-        muted: true,
-        // 预加载
-        preload: 'auto',
-        // 是否自动播放
-        autoplay: true,
-        // 是否循环播放
-        loop: true,
-        inactivityTimeout: false,
-        // 启用响应模式
-        responsive: true,
-        // 启用填充模式
-        fill: false,
-        // 自适应宽高
-        fluid: false,
-        // 设置宽比
-        aspectRatio: '4:3',
-        controlBar: {
-            // 当前时间
-            currentTimeDisplay: false,
-            // '/'分隔符
-            timeDivider: false,
-            // 总时间
-            durationDisplay: false,
-            // 当前播放时间
-            remainingTimeDisplay: true,
-            // 声音控制键
-            volumeControl: true,
-            // 点播流时，播放进度条，seek控制
-            progressControl: true,
-            // 全屏按钮
-            fullscreenToggle: true,
-            // 直播流时，显示LIVE
-            liveDisplay: true,
-            // 暂停和播放键
-            playToggle: {// 重播
-                replay: true
-            },
-            volumePanel: {// 音量
-                inline: false
-            },
-        },
-        // 只支持Html5，此选项可以设置true为强制触摸设备的本机控件
-        nativeControlsForTouch: false,
-        // 本机音轨支持
-        nativeAudioTracks: false,
-        // 允许覆盖Video.js无法播放媒体源时显示的默认消息
-        notSupportedMessage: '离开一会儿，请耐心等候',
-        sources: [ // 视频源
-            {
-                src: 'http://127.0.0.1:7002/live/movie.m3u8',
-                type: 'application/x-mpegURL',
-                poster: ''
-            }
-        ]
-    }, function () {
-        console.log(this)
-        this.on('loadedmetadata',function(){
-            console.log('loadedmetadata');
-            // 加载到元数据后开始播放视频
-            player.play();
-        })
+        language: 'zh-CN',
+        fluid: true,
+        playbackRates: [0.5, 1, 1.5, 2, 3]
+    });
 
-        this.on('ended',function(){
-            console.log('ended')
-        })
-        this.on('firstplay',function(){
-            console.log('firstplay')
-        })
-        this.on('loadstart',function(){
-            //开始加载
-            console.log('loadstart')
-        })
-        this.on('loadeddata',function(){
-            console.log('loadeddata')
-        })
-        this.on('seeking',function(){
-            //正在去拿视频流的路上
-            console.log('seeking')
-        })
-        this.on('seeked',function(){
-            //已经拿到视频流,可以播放
-            console.log('seeked')
-        })
-        this.on('waiting',function(){
-            console.log('waiting')
-        })
-        this.on('pause',function(){
-            console.log('pause')
-        })
-        this.on('play',function(){
-            console.log('play')
-        })
+    var liver = videojs('live', {
+        liveui: true,
+        language: 'zh-CN',
+        fluid: true,
+        playbackRates: [0.5, 1, 1.5, 2, 3]
     });
 </script>
+
+<style>
+    /* 显示时间 */
+    .video-js .vjs-time-control {
+        display: block;
+    }
+
+    .video-js .vjs-remaining-time {
+        display: none;
+    }
+
+    /* 进度条 */
+    video::-webkit-media-controls-timeline {
+        display: none;
+    }
+
+    video {
+        background-color: #000;
+    }
+
+    .video-js .vjs-big-play-button {
+        left: 50% !important;
+        top: 50% !important;
+        margin-top: -0.5rem !important;
+        margin-left: -0.5rem !important;
+        border-radius: 2rem !important;
+        width: 1rem !important;
+        height: 1rem !important;
+        line-height: 1rem !important;
+        border-color: #0B5ED7 !important;
+        background-color: #0B5ED7 !important;
+    }
+</style>

@@ -1,0 +1,16 @@
+##########################################################################
+#Author :       happylay 安徽理工大学
+#Created Time : 2021-02-09 02:15
+#Environment :  centos7.6
+##########################################################################
+version: '3.3'
+services:
+  live:
+    image: live
+    container_name: live
+    restart: always
+    build: build
+    network_mode: host
+#    volumes:
+#      - "./config:/config"
+#      - "./statics:/statics"

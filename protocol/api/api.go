@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"strings"
 
 	"github.com/gwuhaolin/livego/av"
 	"github.com/gwuhaolin/livego/configure"
@@ -77,11 +78,11 @@ func JWTMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		// TODO 关闭静态文件jwt认证，开启jwt认证，通过携带jwt参数方式开启认证，http://127.0.0.1:8090/statics/?jwt=密钥
-		//if strings.HasPrefix(r.RequestURI, "/statics/") {
-		//	log.Debug("关闭静态文件jwt认证")
-		//	next.ServeHTTP(w, r)
-		//	return
-		//}
+		if strings.HasPrefix(r.RequestURI, "/statics/js/") || strings.HasPrefix(r.RequestURI, "/statics/css/") || strings.HasPrefix(r.RequestURI, "/statics/media/") {
+			log.Debug("关闭静态文件jwt认证")
+			next.ServeHTTP(w, r)
+			return
+		}
 
 		var algorithm jwt.SigningMethod
 		if len(configure.Config.GetString("jwt.algorithm")) > 0 {

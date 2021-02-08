@@ -93,5 +93,8 @@ redis_pwd:
 
 # http://127.0.0.1:8090/control/delete?room=movie
 
-# 测试页面
+# 测试页面-关闭jwt
 # http://127.0.0.1:8090/statics/
+
+# 测试页面-开启jwt
+# http://127.0.0.1:8090/statics/?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsaXZlIjoidHJ1ZSJ9.h-RiquHM5wt13ut17MPxCasJFCFolC-irj4KbPXeSQM

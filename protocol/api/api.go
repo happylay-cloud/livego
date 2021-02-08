@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-	"strings"
 
 	"github.com/gwuhaolin/livego/av"
 	"github.com/gwuhaolin/livego/configure"
@@ -77,12 +76,12 @@ func JWTMiddleware(next http.Handler) http.Handler {
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		// TODO 关闭静态文件jwt认证
-		if strings.HasPrefix(r.RequestURI, "/statics/") {
-			log.Debug("关闭静态文件jwt认证")
-			next.ServeHTTP(w, r)
-			return
-		}
+		// TODO 关闭静态文件jwt认证，开启jwt认证，通过携带jwt参数方式开启认证，http://127.0.0.1:8090/statics/?jwt=密钥
+		//if strings.HasPrefix(r.RequestURI, "/statics/") {
+		//	log.Debug("关闭静态文件jwt认证")
+		//	next.ServeHTTP(w, r)
+		//	return
+		//}
 
 		var algorithm jwt.SigningMethod
 		if len(configure.Config.GetString("jwt.algorithm")) > 0 {
@@ -96,11 +95,15 @@ func JWTMiddleware(next http.Handler) http.Handler {
 		}
 
 		jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
+			// 获取token方式，请求头，参数jwt
 			Extractor: jwtmiddleware.FromFirst(jwtmiddleware.FromAuthHeader, jwtmiddleware.FromParameter("jwt")),
+			// 设置校验密钥
 			ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
 				return []byte(configure.Config.GetString("jwt.secret")), nil
 			},
+			// 设置签名方式
 			SigningMethod: algorithm,
+			// 错误响应处理器
 			ErrorHandler: func(w http.ResponseWriter, r *http.Request, err string) {
 				res := &Response{
 					w:      w,
@@ -111,6 +114,7 @@ func JWTMiddleware(next http.Handler) http.Handler {
 			},
 		})
 
+		// 校验token
 		jwtMiddleware.HandlerWithNext(w, r, next.ServeHTTP)
 	})
 }

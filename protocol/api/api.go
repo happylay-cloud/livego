@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"strings"
 
 	"github.com/gwuhaolin/livego/av"
 	"github.com/gwuhaolin/livego/configure"
@@ -62,7 +63,7 @@ func NewServer(h av.Handler, rtmpAddr string) *Server {
 	}
 }
 
-// JWTMiddleware 中间件
+// JWTMiddleware jwt中间件
 func JWTMiddleware(next http.Handler) http.Handler {
 	log.Debugf("初始化jwt中间件")
 	log.Debug("jwt加密方式：", configure.Config.GetString("jwt.algorithm"))
@@ -75,6 +76,14 @@ func JWTMiddleware(next http.Handler) http.Handler {
 	log.Info("使用jwt中间件")
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		// TODO 关闭静态文件jwt认证
+		if strings.HasPrefix(r.RequestURI, "/statics/") {
+			log.Debug("关闭静态文件jwt认证")
+			next.ServeHTTP(w, r)
+			return
+		}
+
 		var algorithm jwt.SigningMethod
 		if len(configure.Config.GetString("jwt.algorithm")) > 0 {
 			// 获取签名方法

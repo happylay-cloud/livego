@@ -15,11 +15,11 @@ http://127.0.0.1:8090/statics/
 ```http request
 video.js 
 
-7.7.0（待重测）
+7.7.5（最高兼容版本-不兼容safari）
 
 7.5.5 
 
-7.4.1（最低兼容版本-safari）
+7.4.1（最低兼容版本-兼容safari）
 ```
 ```scss
 /* 显示时间轴-bug */

@@ -50,9 +50,9 @@ server:
 # HMAC签名方法：  HS256 HS384 HS512
 # RSA签名方法：   RS256，RS384，RS512
 # ECDSA签名方法： ES256，ES384，ES512
-#jwt:
-#  secret: "test"
-#  algorithm: "HS256"
+jwt:
+  secret: "test"
+  algorithm: "HS256"
 
 #------------------------------------------------------------------------
 

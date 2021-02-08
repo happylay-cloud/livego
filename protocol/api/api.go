@@ -106,9 +106,10 @@ func JWTMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func (s *Server) Serve(l net.Listener) error {
+func (s *Server) Serve(listener net.Listener) error {
 	mux := http.NewServeMux()
 
+	// 静态资源目录
 	mux.Handle("/statics/", http.StripPrefix("/statics/", http.FileServer(http.Dir("statics"))))
 
 	mux.HandleFunc("/control/push", func(w http.ResponseWriter, r *http.Request) {
@@ -120,6 +121,8 @@ func (s *Server) Serve(l net.Listener) error {
 	mux.HandleFunc("/control/get", func(w http.ResponseWriter, r *http.Request) {
 		s.handleGet(w, r)
 	})
+
+	// TODO 此处存在bug，重置密钥需要删除原有密钥
 	mux.HandleFunc("/control/reset", func(w http.ResponseWriter, r *http.Request) {
 		s.handleReset(w, r)
 	})
@@ -129,8 +132,8 @@ func (s *Server) Serve(l net.Listener) error {
 	mux.HandleFunc("/stat/livestat", func(w http.ResponseWriter, r *http.Request) {
 		s.GetLiveStatics(w, r)
 	})
-	_ = http.Serve(l, JWTMiddleware(mux))
-	return nil
+
+	return http.Serve(listener, JWTMiddleware(mux))
 }
 
 type stream struct {

@@ -17,11 +17,18 @@
        webkit-playsinline="" controls playsinline>
     <source src="./demo.mp4">
 </video>
-<!-- 直播简单配置 -->
-<video id=live class="video-js vjs-default-skin vjs-big-play-centered" x5-playsinline="" playsinline=""
-       webkit-playsinline="" controls playsinline>
-        <source src="http://127.0.0.1:7002/live/movie.m3u8">
+
+<!-- 直播配置 -->
+<video id=live
+       class="video-js vjs-default-skin vjs-big-play-centered"
+       playsinline="true"
+       webkit-playsinline="true"
+       x-webkit-airplay="allow"
+       x5-playsinline="true"
+       x5-video-player-type="h5"
+>
 </video>
+
 </body>
 
 </html>
@@ -31,14 +38,90 @@
         liveui: true,
         language: 'zh-CN',
         fluid: true,
-        playbackRates: [0.5, 1, 1.5, 2, 3]
+        playbackRates: [0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
     });
 
+    // 直播配置
     var liver = videojs('live', {
+        // 是否显示控制条
+        controls: true,
+        // 预加载
+        preload: 'auto',
+        // 是否自动播放
+        autoplay: true,
+        // 是否静音
+        muted: false,
+        // 直播样式（部分兼容）
         liveui: true,
+        // 语言
         language: 'zh-CN',
+        // 自适应
         fluid: true,
-        playbackRates: [0.5, 1, 1.5, 2, 3]
+        // 设置宽比
+        aspectRatio: '4:3',
+        // 播放速度
+        playbackRates: [0.5, 0.75, 1.0, 1.25, 1.5, 2.0],
+        // 启用原生样式
+        nativeControlsForTouch: false,
+        // 显示错误
+        errorDisplay : true,
+        controlBar: {
+            // 当前时间（开启）
+            currentTimeDisplay: true,
+            // '/'分隔符（关闭）
+            timeDivider: false,
+            // 总时间（关闭）
+            durationDisplay: false,
+            volumePanel: {// 音量
+                inline: false
+            },
+        },
+        // 视频源
+        sources: [
+            {
+                src: 'http://127.0.0.1:7002/live/movie.m3u8',
+                type: 'application/x-mpegURL',
+                poster: ''
+            }
+        ]
+    },function () {
+        console.log(this)
+        this.on('loadedmetadata',function(){
+            console.log('loadedmetadata');
+            // 加载到元数据后开始播放视频
+            liver.play();
+        })
+
+        this.on('ended',function(){
+            console.log('ended')
+        })
+        this.on('firstplay',function(){
+            console.log('firstplay')
+        })
+        this.on('loadstart',function(){
+            //开始加载
+            console.log('loadstart')
+        })
+        this.on('loadeddata',function(){
+            console.log('loadeddata')
+        })
+        this.on('seeking',function(){
+            //正在去拿视频流的路上
+            console.log('seeking')
+        })
+        this.on('seeked',function(){
+            //已经拿到视频流,可以播放
+            console.log('seeked')
+        })
+        this.on('waiting',function(){
+            console.log('waiting')
+        })
+        this.on('pause',function(){
+            console.log('pause')
+        })
+        this.on('play',function(){
+            console.log('play')
+        })
     });
 </script>
 
@@ -48,29 +131,33 @@
         display: block;
     }
 
+    /* 不显示剩余时间，兼容移动端能显示全屏 */
     .video-js .vjs-remaining-time {
         display: none;
     }
 
-    /* 进度条 */
-    video::-webkit-media-controls-timeline {
-        display: none;
-    }
-
+    /* 播放器背景颜色 */
     video {
         background-color: #000;
     }
 
-    .video-js .vjs-big-play-button {
-        left: 50% !important;
-        top: 50% !important;
-        margin-top: -0.5rem !important;
-        margin-left: -0.5rem !important;
-        border-radius: 2rem !important;
-        width: 1rem !important;
-        height: 1rem !important;
-        line-height: 1rem !important;
-        border-color: #0B5ED7 !important;
-        background-color: #0B5ED7 !important;
+    /* 中间大的播放按钮 */
+    .video-js .vjs-big-play-button{
+        font-size: 2.5em;
+        line-height: 2.3em;
+        height: 2.5em;
+        width: 2.5em;
+        -webkit-border-radius: 2.5em;
+        -moz-border-radius: 2.5em;
+        border-radius: 2.5em;
+        background-color: rgba(115,133,159,.5);
+        border-width: 0.12em;
+        margin-top: -1.25em;
+        margin-left: -1.75em;
+    }
+
+    /* 给.video-js设置字体大小以统一各浏览器样式表现，因为video.js采用的是em单位 */
+    .video-js {
+        font-size: 10px;
     }
 </style>

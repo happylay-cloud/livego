@@ -5,9 +5,9 @@
 ##########################################################################
 version: '3.3'
 services:
-  live:
-    image: live
-    container_name: live
+  livego:
+    image: livego
+    container_name: livego
     restart: always
     build: build
     network_mode: host

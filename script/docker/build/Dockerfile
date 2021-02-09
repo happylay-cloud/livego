@@ -6,7 +6,7 @@
 
 FROM happylay/openjdk:8.0.0
 
-ADD live /
+ADD livego /
 
 ADD config /config/
 

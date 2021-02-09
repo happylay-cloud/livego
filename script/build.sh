@@ -9,9 +9,7 @@
 VERSION=1.0.0
 
 # 应用名称（修改）
-APP_NAME=live
-
-cd ../script
+APP_NAME=livego
 
 # linux_amd64环境
 gfctl build ../main.go --name $APP_NAME --arch amd64 --system linux --version $VERSION -p ../bin
@@ -24,21 +22,23 @@ gfctl build ../main.go --name $APP_NAME --arch amd64 --system darwin --version $
 
 # -----------------------------------新增配置--------------------------------------
 # 创建配置文件夹
-mkdir -p ../bin/$VERSION/{config,statics}
+mkdir -p ../bin/$VERSION/{config,statics,docker}
 
 # 复制配置文件
 cp ../config/* ../bin/$VERSION/config
 # 复制静态文件
-cp -r ../statics/* ../bin/$VERSION/statics
+cp -Xr ../statics/* ../bin/$VERSION/statics
+# 复制docker文件
+cp -Xr ./docker/* ../bin/$VERSION/docker
 
 cd ../bin/$VERSION
 
 # 创建各个平台配置文件
-mkdir -p ./darwin_amd64/{config,statics}
+mkdir -p ./darwin_amd64/{config,statics,docker}
 
-mkdir -p ./linux_amd64/{config,statics}
+mkdir -p ./linux_amd64/{config,statics,docker}
 
-mkdir -p ./windows_amd64/{config,statics}
+mkdir -p ./windows_amd64/{config,statics,docker}
 
 cp ./config/* ./darwin_amd64/config
 
@@ -52,6 +52,13 @@ cp -Xr ./statics/* ./darwin_amd64/statics
 cp -Xr ./statics/* ./linux_amd64/statics
 
 cp -Xr ./statics/* ./windows_amd64/statics
+
+# -X排除扩展属性
+cp -Xr ./docker/* ./darwin_amd64/docker
+
+cp -Xr ./docker/* ./linux_amd64/docker
+
+cp -Xr ./docker/* ./windows_amd64/docker
 #--------------------------------------------------------------------------------------
 # 压缩应用
 
